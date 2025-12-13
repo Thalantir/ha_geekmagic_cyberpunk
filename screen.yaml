@@ -1,5 +1,5 @@
 esphome:
-  name: small-tv-ultra-yellow
+  name: small-tv
   friendly_name: Small TV
   platformio_options:
     board_build.f_cpu: 160000000L
