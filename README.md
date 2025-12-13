@@ -216,14 +216,14 @@ light:
 ## TROUBLESHOOTING
 
 ### Display Shows Nothing
-1. ✅ Check SPI connections:
+1. Check SPI connections:
    - CLK → GPIO14
    - MOSI → GPIO13
-2. ✅ Verify display pins:
+2. Verify display pins:
    - DC → GPIO00
    - RESET → GPIO02
-3. ✅ Verify voltage (3.3V for display!)
-4. ✅ Test backlight PWM pin (GPIO05)
+3. Verify voltage (3.3V for display!)
+4. Test backlight PWM pin (GPIO05)
 
 ### Boot Screen Stuck
 
@@ -567,7 +567,7 @@ automation:
 
 ---
 
-## 📄 LICENSE
+## LICENSE
 
 Open source - use and modify as you wish!  
 No warranties, use at your own risk.
@@ -589,3 +589,4 @@ No warranties, use at your own risk.
 ---
 
 **Enjoy your Cyberpunk Display!**
+
