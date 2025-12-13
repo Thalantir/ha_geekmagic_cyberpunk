@@ -164,7 +164,7 @@ display:
         it.line(240, 210, 240, 240, bracket_color);
 
         // Boot messages
-        it.print(120, 60, id(font_medium), neon_cyan, TextAlign::CENTER, "TH0RZ0R");
+        it.print(120, 60, id(font_medium), neon_cyan, TextAlign::CENTER, "cyb3rpunk");
         it.print(120, 90, id(font_small), neon_magenta, TextAlign::CENTER, "SYSTEM BOOT");
 
         // Status messages
