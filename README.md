@@ -216,14 +216,14 @@ light:
 ## TROUBLESHOOTING
 
 ### Display Shows Nothing
-1. Check SPI connections:
+1. ✅ Check SPI connections:
    - CLK → GPIO14
    - MOSI → GPIO13
-2. Verify display pins:
+2. ✅ Verify display pins:
    - DC → GPIO00
    - RESET → GPIO02
-3. Verify voltage (3.3V for display!)
-4. Test backlight PWM pin (GPIO05)
+3. ✅ Verify voltage (3.3V for display!)
+4. ✅ Test backlight PWM pin (GPIO05)
 
 ### Boot Screen Stuck
 
@@ -286,28 +286,173 @@ light:
 
 ## UPDATES & EXTENSIONS
 
-### Add New Sensor
+### Add New Sensor - Detailed Guide
 
-**Step 1:** Add sensor to YAML:
+#### **Step 1:** Add Sensor Entity to YAML
+
+At the top of `screen.yaml`, add your new sensor with the existing sensors:
+
+```yaml
+sensor:
+  # ... existing sensors ...
+  
+  - platform: homeassistant
+    id: co2_sensor  # Internal ID used in code
+    entity_id: sensor.your_co2_sensor  # Your Home Assistant entity
+```
+
+---
+
+#### **Step 2:** Add Display Code in Lambda
+
+Open `screen.yaml` and find the display lambda section (around line 250). Locate the power sensor code:
+
+```cpp
+// Power with pulsing red/magenta
+if (id(office_power).state >= 1.0) {
+  it.printf(10, 135, id(font_small), power_color, TextAlign::LEFT, "kW:");
+  it.printf(120, 135, id(font_small), neon_cyan, TextAlign::RIGHT, "%.2f", id(office_power).state);
+} else {
+  it.printf(10, 135, id(font_small), power_color, TextAlign::LEFT, "W:");
+  it.printf(120, 135, id(font_small), neon_cyan, TextAlign::RIGHT, "%.0f", id(office_power).state * 1000);
+}
+
+// ========== ADD YOUR NEW SENSOR HERE ==========
+// CO2 sensor example
+it.printf(10, 155, id(font_small), neon_green, TextAlign::LEFT, "CO2:");
+it.printf(120, 155, id(font_small), neon_cyan, TextAlign::RIGHT, "%.0f", id(co2_sensor).state);
+// ===============================================
+
+//  RIGHT PM PANEL - PULSING BORDER
+```
+
+**Understanding the printf Parameters:**
+
+```cpp
+it.printf(10, 155, id(font_small), neon_green, TextAlign::LEFT, "CO2:");
+//        │   │    │               │           │                │
+//        │   │    │               │           │                └─ Text label
+//        │   │    │               │           └─ Alignment (LEFT/CENTER/RIGHT)
+//        │   │    │               └─ Color (neon_green, neon_orange, neon_cyan, etc.)
+//        │   │    └─ Font (font_small=20px, font_medium=28px, font_large=50px)
+//        │   └─ Y position (vertical - higher number = lower on screen)
+//        └─ X position (horizontal - 10 = left side, 120 = right side)
+
+it.printf(120, 155, id(font_small), neon_cyan, TextAlign::RIGHT, "%.0f", id(co2_sensor).state);
+//        │    │                                                   │      │
+//        │    │                                                   │      └─ Sensor value
+//        │    └─ Y position (SAME as label for alignment!)        └─ Format string
+//        └─ X = 120 for right-aligned values
+```
+
+**Format String Options:**
+- `%.0f` = No decimals (example: 450)
+- `%.1f` = One decimal (example: 23.5)
+- `%.2f` = Two decimals (example: 1.23)
+
+**Y Position Spacing:**
+- **75** = Line 1 (NOx)
+- **95** = Line 2 (VOC)  ← +20 pixels
+- **115** = Line 3 (HUM)  ← +20 pixels
+- **135** = Line 4 (Power)  ← +20 pixels
+- **155** = Line 5 (Your new sensor)  ← +20 pixels
+
+---
+
+#### **Step 3:** Enlarge Panel to Fit New Sensor
+
+Find the left panel code (around line 233):
+
+```cpp
+//  LEFT DATA PANEL - PULSING BORDER
+int panel_pulse = (int)(150 + 105 * sin(time_sec * 2.5));
+Color left_border = Color(255, panel_pulse, 147);
+it.filled_rectangle(5, 75, 125, 85, Color(20, 0, 40, 200));
+//                   │  │   │    │
+//                   │  │   │    └─ Height in pixels
+//                   │  │   └─ Width in pixels
+//                   │  └─ Y start position
+//                   └─ X start position
+it.rectangle(5, 75, 125, 85, left_border);
+```
+
+**Calculate New Height:**
+- Original: 4 sensors × 20 pixels = 80 + 5 padding = **85 pixels**
+- With 5 sensors: 5 × 20 = 100 + 5 padding = **105 pixels**
+
+**Change both rectangle calls:**
+
+```cpp
+it.filled_rectangle(5, 75, 125, 105, Color(20, 0, 40, 200));
+//                               ↑↑↑ Changed from 85 to 105
+it.rectangle(5, 75, 125, 105, left_border);
+//                        ↑↑↑ Changed from 85 to 105
+```
+
+---
+
+#### **Visual Layout Guide:**
+
+**Before (4 sensors, height 85):**
+```
+┌─────────────┐
+│ NOx:    123 │ ← Y: 75
+│ VOC:    456 │ ← Y: 95
+│ HUM:    65% │ ← Y: 115
+│ kW:    1.23 │ ← Y: 135
+└─────────────┘ ← Height: 85
+```
+
+**After (5 sensors, height 105):**
+```
+┌─────────────┐
+│ NOx:    123 │ ← Y: 75
+│ VOC:    456 │ ← Y: 95
+│ HUM:    65% │ ← Y: 115
+│ kW:    1.23 │ ← Y: 135
+│ CO2:    450 │ ← Y: 155 (NEW!)
+└─────────────┘ ← Height: 105
+```
+
+---
+
+#### **Complete Example: Adding CO2 Sensor**
+
+**In sensor section (top of file):**
 ```yaml
 sensor:
   - platform: homeassistant
-    id: my_new_sensor
-    entity_id: sensor.new_sensor_entity
+    id: co2_sensor
+    entity_id: sensor.living_room_co2
 ```
 
-**Step 2:** Add display code (e.g., after power sensor):
+**In display lambda (after power sensor):**
 ```cpp
-// New sensor display
-it.printf(10, 155, id(font_small), neon_green, TextAlign::LEFT, "New:");
-it.printf(120, 155, id(font_small), neon_cyan, TextAlign::RIGHT, "%.1f", id(my_new_sensor).state);
+// CO2 level
+it.printf(10, 155, id(font_small), neon_green, TextAlign::LEFT, "CO2:");
+it.printf(120, 155, id(font_small), neon_cyan, TextAlign::RIGHT, "%.0f ppm", id(co2_sensor).state);
 ```
 
-**Step 3:** Enlarge panel if needed:
+**Enlarge left panel:**
 ```cpp
 it.filled_rectangle(5, 75, 125, 105, Color(20, 0, 40, 200));
-//                              ↑ Was 85, now 105 for extra sensor
+it.rectangle(5, 75, 125, 105, left_border);
 ```
+
+**Done!** Compile and upload to see your new sensor on the display.
+
+---
+
+#### **Quick Reference Table:**
+
+| Parameter | Value Options | Notes |
+|-----------|---------------|-------|
+| **X Position** | 10 (label), 120 (value) | Fixed positions for alignment |
+| **Y Position** | 75, 95, 115, 135, 155, 175... | +20 pixels per line |
+| **Font** | font_small, font_medium, font_large | small=20px, medium=28px, large=50px |
+| **Color** | neon_cyan, neon_orange, neon_green, neon_purple, neon_pink, neon_magenta | Choose label color for variety |
+| **Format** | %.0f, %.1f, %.2f | 0, 1, or 2 decimal places |
+| **Panel Height** | 85 + (extra_sensors × 20) | Each sensor adds 20 pixels |
 
 ### Customize Boot Screen Text
 Change "cyb3rpunk" to your own name:
@@ -422,7 +567,7 @@ automation:
 
 ---
 
-## LICENSE
+## 📄 LICENSE
 
 Open source - use and modify as you wish!  
 No warranties, use at your own risk.
@@ -444,5 +589,3 @@ No warranties, use at your own risk.
 ---
 
 **Enjoy your Cyberpunk Display!**
-
-
