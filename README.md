@@ -310,7 +310,7 @@ it.filled_rectangle(5, 75, 125, 105, Color(20, 0, 40, 200));
 ```
 
 ### Customize Boot Screen Text
-Change "TH0RZ0R" to your own name:
+Change "cyb3rpunk" to your own name:
 ```cpp
 it.print(120, 60, id(font_medium), neon_cyan, TextAlign::CENTER, "YOUR NAME");
 ```
@@ -444,4 +444,5 @@ No warranties, use at your own risk.
 ---
 
 **Enjoy your Cyberpunk Display!**
+
 
