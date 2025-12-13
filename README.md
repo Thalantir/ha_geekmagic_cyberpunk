@@ -286,7 +286,7 @@ light:
 
 ## UPDATES & EXTENSIONS
 
-### Add New Sensor - Detailed Guide
+### Add New Sensor
 
 #### **Step 1:** Add Sensor Entity to YAML
 
@@ -589,4 +589,5 @@ No warranties, use at your own risk.
 ---
 
 **Enjoy your Cyberpunk Display!**
+
 
