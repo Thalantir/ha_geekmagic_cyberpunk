@@ -514,19 +514,6 @@ automation:
 
 ---
 
-## COLOR REFERENCE
-
-| Sensor | Label Color | Data Color | Usage |
-|--------|-------------|------------|-------|
-| NOx | Neon Orange | Cyan | Air quality |
-| VOC | Neon Green | Cyan | Volatile compounds |
-| Humidity | Light Blue | Cyan | Moisture |
-| Power | Magenta/Red | Cyan | Electricity (pulses at >1.5kW) |
-| PM1/2.5/4/10 | Purple | Cyan | Particulate matter |
-| Temperature | Dynamic | Dynamic | Blue/Orange/Magenta |
-
----
-
 ## SCREEN LAYOUT
 
 ```
@@ -538,7 +525,7 @@ automation:
 │  │  NOx:    123 │  │  PM1:       12  │  │
 │  │  VOC:    456 │  │  PM2.5:     23  │  │
 │  │  HUM:    65% │  │  PM4:       34  │  │
-│  │  kW:    1.23 │  │  PM10:      45  │  │
+│  │  kWh:   1.23 │  │  PM10:      45  │  │
 │  └──────────────┘  └─────────────────┘  │
 │                                         │
 │         ┌──────────────────┐            │
