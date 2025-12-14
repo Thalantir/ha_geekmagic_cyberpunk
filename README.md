@@ -546,8 +546,6 @@ automation:
 | **Platform** | ESP8266 @ 160MHz |
 | **Display** | ST7789V 240x240 16-bit color |
 | **SPI Speed** | 40MHz |
-| **Memory** | 12.5% buffer (optimized) |
-| **Refresh Rate** | ~30 FPS |
 | **Power** | ~500mA @ 5V |
 | **Connectivity** | WiFi 2.4GHz |
 | **Protocol** | ESPHome API |
