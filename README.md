@@ -584,10 +584,8 @@ No warranties, use at your own risk.
 
 **Questions?**
 - ESPHome documentation: https://esphome.io
-- Home Assistant forum: https://community.home-assistant.io
+- Home Assistant forum: https://community.home-assistant.io/t/installing-esphome-on-geekmagic-smart-weather-clock-smalltv-pro/618029
 
 ---
 
 **Enjoy your Cyberpunk Display!**
-
-
